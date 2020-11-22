@@ -5,6 +5,8 @@ import javax.lang.model.type.MirroredTypeException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Test {
 
@@ -92,6 +94,8 @@ public class Test {
 
 
     private static void createUser() {
+        Pattern emailPattern, phonePattern;
+        Matcher emailMatcher, phoneMatcher;
         Scanner sc = new Scanner(System.in);
         List<String> phones = new ArrayList<String>();
         List<String> roles = new ArrayList<String>();
@@ -99,8 +103,22 @@ public class Test {
         String firstname = sc.nextLine();
         System.out.print("Enter last name: ");
         String lastname = sc.nextLine();
-        System.out.print("Enter email: ");
-        String email = sc.nextLine();
+
+        String email = "";
+
+        emailPattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" +
+                "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+        phonePattern = Pattern.compile("^375[0-9]{9}$");
+        do {
+            System.out.print("Enter correct email (for example user@us.com): ");
+            email = sc.nextLine();
+            emailMatcher = emailPattern.matcher(email);
+            if (!emailMatcher.matches()) {
+                System.out.println("Error. Email not entered correctly");
+            }
+
+        } while (!emailMatcher.matches());
+
 
         int qtyPhones = 0;
         String qtyPhonesString = "";
@@ -111,13 +129,25 @@ public class Test {
                 qtyPhones = Integer.parseInt(qtyPhonesString);
 
             } catch (NumberFormatException e) {
-
+                System.out.println("Error. Phone number not entered correctly");
             }
         } while (!(qtyPhones >= 1 && qtyPhones <= 3));
 
+        String phone = "";
         for (int i = 0; i < qtyPhones; i++) {
             System.out.print("Enter phone number: ");
-            String phone = sc.nextLine();
+
+            do {
+                System.out.print("Enter correct email (for example user@us.com): ");
+                phone = sc.nextLine();
+                phoneMatcher = phonePattern.matcher(phone);
+                if (!emailMatcher.matches()) {
+                    System.out.println("Error. Email not entered correctly");
+                }
+            }
+            while (!phoneMatcher.matches());
+
+
             phones.add(phone);
         }
         int qtyRoles = 0;
