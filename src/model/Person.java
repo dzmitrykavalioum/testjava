@@ -1,11 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Person {
+public class Person implements Serializable {
 
-//    private static int keyId=0;
-    private int id;
 
     public String getFirstName() {
         return firstName;
@@ -60,6 +59,7 @@ public class Person {
         this.roles = roles;
         this.phones = phones;
         this.email = email;
+
     }
 
 
