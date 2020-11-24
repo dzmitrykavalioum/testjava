@@ -14,6 +14,7 @@ public class Test {
 
     private static List<Person> persons;
     private static final String fileName = "test.txt";
+    private static final int outOfRange = -1;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -21,8 +22,6 @@ public class Test {
         loadData();
         showMenu(scanner);
         saveChanges();
-
-
     }
 
     public static void showMenu(Scanner scanner) {
@@ -44,8 +43,7 @@ public class Test {
             try {
                 choice = Integer.parseInt(choiceString);
             } catch (NumberFormatException e) {
-                System.out.println("Enter correct number from menu");
-                choice = 100;
+                choice = outOfRange;
             }
             switch (choice) {
                 case 1: {
@@ -55,7 +53,6 @@ public class Test {
                 case 2: {
                     isNewUser = true;
                     createUser(isNewUser);
-
                     break;
                 }
                 case 3: {
@@ -89,34 +86,26 @@ public class Test {
             }
         }
         System.out.println("Bye");
-
     }
 
     private static void loadData() {
-        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName)))
-        {
 
-            persons=((ArrayList<Person>)ois.readObject());
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+            persons = ((ArrayList<Person>) ois.readObject());
             System.out.println("File has been read");
-        }
-        catch(Exception ex){
-
-            System.out.println(ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("The file does not exist. Create users and save them to a file (menu item 6)");
         }
     }
 
     private static void saveChanges() {
-        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName)))
-        {
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
             oos.writeObject(persons);
-            System.out.println("File has been written");
-
-        }
-        catch(Exception ex){
-
+            System.out.println("Changes are saved to a file.");
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-
     }
 
     private static void generateSomeUsers() {
@@ -126,55 +115,50 @@ public class Test {
         phones.add("375257654321");
         roles.add("actor");
         roles.add("editor");
-        persons.add(new Person("Dzmitry", "Kava", roles, phones, "wwwleningrad@gmail.com"));
-        persons.add(new Person("Michail", "Kaval", roles, phones, "mikakika@gmail.com"));
-        persons.add(new Person("AAAAA", "SSSSSS", roles, phones, "mikakika@gmail.com"));
-        persons.add(new Person("BBBBBB", "DDDDDD", roles, phones, "mikakika@gmail.com"));
-        persons.add(new Person("CCCCCC", "WWWWWWWW", roles, phones, "mikakika@gmail.com"));
+        persons.add(new Person("Castiel", "Collins", roles, phones, "castiel@gmail.com"));
+        persons.add(new Person("Deen", "Weenchester", roles, phones, "deen@gmail.com"));
+        persons.add(new Person("Jack", "Luciferssun", roles, phones, "jack@Jack.com"));
+        persons.add(new Person("Ruby", "Freate", roles, phones, "ruby@gmail.com"));
+        persons.add(new Person("Sam", "Weenchester", roles, phones, "sam@gmail.com"));
         System.out.println(persons.size() + " Persons are created \n");
     }
 
     private static void printAllUsers(List<Person> persons) {
         for (Person person : persons
         ) {
-            printAllDataPerson(person);
+            System.out.println(person.toString());
         }
-
-
     }
-
 
     private static void deleteUserByIndex() {
         printShortUsers();
         Scanner scanner = new Scanner(System.in);
         String idString = "";
         int indexInt = -1;
-        int maxIndex = persons.size()-1;
-        //int maxIndex = Person.getKeyId();
+        int maxIndex = persons.size() - 1;
 
         do {
-            System.out.print("Enter correct user index: (0-" + maxIndex + ")");
+            System.out.print("Enter the correct index to delete: (0-" + maxIndex + ")");
             idString = scanner.nextLine();
             try {
                 indexInt = Integer.parseInt(idString);
 
             } catch (NumberFormatException e) {
-                System.out.println("Error. Index must be between 0 and " + maxIndex+ " )");
+                System.out.println("Error. Index must be between 0 and " + maxIndex);
             }
         } while (!(indexInt >= 0 && indexInt <= maxIndex));
 
-        //Person person = findPersonById(indexInt, persons);
         Person person = persons.get(indexInt);
         if (person != null) {
             persons.remove(person);
-            System.out.println("Success! User has been deleted!\n");
+            System.out.println("Success! User "+person.getFirstName()+" "+person.getLastName()+" has been deleted!\n");
         } else {
             System.out.println("Error. Wrong index");
         }
-
     }
 
     private static Person findFirstPersonByLastName(String lastName, List<Person> persons) {
+        //unused for the future
         Person person = null;
         for (Person item : persons
         ) {
@@ -183,8 +167,8 @@ public class Test {
                 break;
             }
         }
+        // you must to check : person!=null
         return person;
-
     }
 
     private static void createUser(boolean isNewUser) {
@@ -194,19 +178,17 @@ public class Test {
         List<String> phones = new ArrayList<String>();
         List<String> roles = new ArrayList<String>();
         Person editPerson = null;
-        //int maxIndex = Person.getKeyId();
-        int maxIndex = persons.size()-1;
+        int maxIndex = persons.size() - 1;
         int indexInt = -1;
         if (!isNewUser) {
-
-            String idString = "";
+            String indexString = "";
             do {
                 printShortUsers();
                 System.out.print("Enter correct user index: (0-" + maxIndex + ")");
 
-                idString = sc.nextLine();
+                indexString = sc.nextLine();
                 try {
-                    indexInt = Integer.parseInt(idString);
+                    indexInt = Integer.parseInt(indexString);
 
                 } catch (NumberFormatException e) {
                     System.out.println("Error. Index must be between 0 and " + maxIndex);
@@ -214,7 +196,7 @@ public class Test {
 
             } while (!(indexInt >= 0 && indexInt <= maxIndex));
             editPerson = persons.get(indexInt);
-            printAllDataPerson(editPerson);
+            System.out.println(editPerson.toString());
         }
         System.out.print("Enter first name: ");
         String firstName = sc.nextLine();
@@ -248,8 +230,6 @@ public class Test {
 
         String phone = "";
         for (int i = 0; i < qtyPhones; i++) {
-
-
             do {
                 System.out.print("Enter correct phone number (for example 375291234567): ");
                 phone = sc.nextLine();
@@ -259,8 +239,6 @@ public class Test {
                 }
             }
             while (!phoneMatcher.matches());
-
-
             phones.add(phone);
         }
         int qtyRoles = 0;
@@ -276,7 +254,7 @@ public class Test {
             }
         } while (!(qtyRoles >= 1 && qtyRoles <= 3));
         for (int i = 0; i < qtyRoles; i++) {
-            System.out.print("Enter role: ");
+            System.out.print("Enter the role: ");
             String role = sc.nextLine();
             roles.add(role);
         }
@@ -291,34 +269,15 @@ public class Test {
             editPerson.setPhones(phones);
             editPerson.setEmail(email);
             persons.set(indexInt, editPerson);
-            System.out.println("The user changed\n");
+            System.out.println("The user has been changed\n");
         }
-
-
     }
 
     private static void printShortUsers() {
-        for (int i = 0; i<persons.size();i++) {
+        for (int i = 0; i < persons.size(); i++) {
             System.out.println("Index: " + i + "\t" + persons.get(i).getFirstName() + "\t" + persons.get(i).getLastName());
         }
     }
 
 
-    private static void printAllDataPerson(Person person) {
-        List<String> phones = person.getPhones();
-        List<String> roles = person.getRoles();
-
-
-        System.out.println(person.getFirstName() + "\t" + person.getLastName());
-        System.out.println(person.getEmail());
-        for (String phone : phones
-        ) {
-            System.out.println("Phone:\t" + phone);
-        }
-        for (String role : roles
-        ) {
-            System.out.println("Role:\t" + role);
-        }
-        System.out.println();
-    }
 }
