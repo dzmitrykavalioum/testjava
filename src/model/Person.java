@@ -63,17 +63,21 @@ public class Person implements Serializable {
 
     @Override
     public String toString() {
-        String person = firstName+"\t"+lastName+"\n"+email+"\n";
+        //String person = firstName+"\t"+lastName+"\n"+email+"\n";
+        StringBuilder person = new StringBuilder(firstName+"\t"+lastName+"\n"+email+"\n");
         for (String phone : phones
         ) {
-            person+="Phone:\t" + phone+"\n";
+            person.append("Phone:\t" + phone+"\n");
+            //person+="Phone:\t" + phone+"\n";
         }
         for (String role : roles
         ) {
-            person+="Role:\t" + role+"\n";
+            person.append("Role:\t" + role+"\n");
+            //person+="Role:\t" + role+"\n";
         }
-        person+="\n";
+        person.append("\n");
+        //person+="\n";
 
-        return person;
+        return person.toString();
     }
 }
